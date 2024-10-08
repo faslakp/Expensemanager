@@ -21,9 +21,11 @@
               {%endfor%}
             {%endif%}
         </div>
+        <h1 class="text-center">welcome user {{request.user}}</h1>
         
         <div class="d-flex justify-content-end p-4">
             <a href="{%url 'expense-add'%}" class="btn btn-outline-success" type="submit">add</a>
+            <a href="{%url 'expense-signout'%}" class="btn btn-outline-danger" type="submit">logout</a>
 
         </div>
         <div class="row">
