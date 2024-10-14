@@ -1,0 +1,17 @@
+{%extends 'base.html'%}
+
+{%block main_block%}
+
+<h2>total expense count={{total_expense_count}}</h2>
+
+<div class="border">
+    <h2>category summary </h2>
+    {%for cs in category_summary%}
+
+    {{cs.category}}={{cs.cat_count}}
+    {%endfor%}
+</div>
+
+
+
+{%endblock%}

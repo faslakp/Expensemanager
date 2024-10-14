@@ -8,7 +8,14 @@ from django.contrib import messages
 from budget.models import Expense
 
 
+from budget.decorators import signin_required
+from django.utils.decorators import method_decorator
 
+from django.views.decorators.cache import never_cache
+
+decs=[signin_required,never_cache]
+
+@method_decorator(decs,name="dispatch")
 class ExpenseCreateView(View):
 
     def get(self,request,*args,**kwargs):
@@ -36,17 +43,22 @@ class ExpenseCreateView(View):
             messages.error(request,"failed")
             
             return render(request,"expense_create.html",{"form":form_instance})
+        
 
 
+@method_decorator(decs,name="dispatch")
 
 class ExpenseListView(View):
     def get(self,request,*args,**kwargs):
 
-        qs=Expense.objects.all()
+        # qs=Expense.objects.all()
+        qs=Expense.objects.filter(user=request.user)
 
         return render(request,"expense_list.html",{"expense":qs})
     
 
+    
+@method_decorator(decs,name="dispatch")
 class ExpenseDetailView(View):
     def get(self,request,*args,**kwargs):
 
@@ -56,6 +68,10 @@ class ExpenseDetailView(View):
 
         return render(request,"expense_deatail.html",{"expense":qs})
     
+
+
+@method_decorator(decs,name="dispatch")
+   
 class ExpenseUpdateView(View):
 
         def get(self,request,*args,**kwargs):
@@ -90,6 +106,8 @@ class ExpenseUpdateView(View):
                messages.error(request,"error")
                return render(request,"expense_edit.html",{"form":form_instance})
             
+            
+@method_decorator(decs,name="dispatch")
 
 class ExpenseDeleteView(View):
 
@@ -102,6 +120,21 @@ class ExpenseDeleteView(View):
         messages.success(request,"deleted")
 
         return redirect("expense-list")
+    
+from django.db.models import Count
+class SummaryView(View):
+    def get(self,request,*args,**kwargs):
+
+        qs=Expense.objects.filter(user=request.user)
+
+        total_expense_count=qs.count()
+        category_summary=qs.values("category").annotate(cat_count=Count("category"))
+        context={
+            "total_expense_count":total_expense_count,
+            "category_summary":category_summary,
+        }
+        return render(request,"dash_board.html",context)
+
     
 
 from django.contrib.auth.models import User
@@ -165,6 +198,7 @@ class SignInView(View):
         return render(request,self.template_name,{"form":form_instance})
     
 
+@method_decorator(decs,name="dispatch")
 class SignoutView(View):
 
     def get(self,request,*args,**kwargs):
