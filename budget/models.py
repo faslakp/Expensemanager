@@ -9,7 +9,7 @@ class Expense(models.Model):
 
     amount=models.PositiveIntegerField()
 
-    created_date=models.DateTimeField(auto_now=True)
+    created_date=models.DateTimeField(auto_now_add=True)
     category_choices=(
         ("food","food"),
         ("travel","travel"),

@@ -28,6 +28,8 @@ urlpatterns = [
     path('expensesignup/',views.SignUpView.as_view(),name="expense-signup"),
     path('expensesignin/',views.SignInView.as_view(),name='expense-signin'),
     path('expense/signout/',views.SignoutView.as_view(),name="expense-signout"),
+    path('dashboard/',views.DashboardView.as_view(),name="dashboard"),
+    
     
        
 

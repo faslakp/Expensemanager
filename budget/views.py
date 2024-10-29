@@ -122,16 +122,21 @@ class ExpenseDeleteView(View):
         return redirect("expense-list")
     
 from django.db.models import Count
+from django.db.models import Sum
 class SummaryView(View):
     def get(self,request,*args,**kwargs):
 
         qs=Expense.objects.filter(user=request.user)
 
         total_expense_count=qs.count()
+
+        total_expense=qs.values("amount").aggregate(sum_expense=Sum("amount"))
+
         category_summary=qs.values("category").annotate(cat_count=Count("category"))
         context={
             "total_expense_count":total_expense_count,
             "category_summary":category_summary,
+            "total_expense":total_expense,
         }
         return render(request,"dash_board.html",context)
 
@@ -207,6 +212,14 @@ class SignoutView(View):
 
         return redirect("expense-signin")
 
+
+class DashboardView(View):
+
+    template_name="dash_board.html"
+    def get(self,request,*args,**kwargs):
+        return render(request,self.template_name)
+    
+    
             
 
 
