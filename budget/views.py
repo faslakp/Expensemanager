@@ -50,11 +50,25 @@ class ExpenseCreateView(View):
 
 class ExpenseListView(View):
     def get(self,request,*args,**kwargs):
+        selected_category=request.GET.get("category","all")
+        if selected_category == "all":
+            qs=Expense.objects.filter(user=request.user)
+        else:
+            qs=Expense.objects.filter(category=selected_category,user=request.user)
+        return render(request,"expense_list.html",{"expense":qs,"selected":selected_category})
 
-        # qs=Expense.objects.all()
-        qs=Expense.objects.filter(user=request.user)
+        # # qs=Expense.objects.all()
+        # qs=Expense.objects.filter(user=request.user)
 
-        return render(request,"expense_list.html",{"expense":qs})
+        # if "category" in request.GET:
+        #     category_value=request.GET.get("category")
+        #     qs=qs.filter(category=category_value)
+        #     if category_value=="all":
+        #         qs=Expense.objects.filter(user=request.user)
+
+
+        # return render(request,"expense_list.html",{"expense":qs,
+        #                                            "selected":request.GET.get("category","all")})
     
 
     
@@ -128,15 +142,13 @@ class SummaryView(View):
 
         qs=Expense.objects.filter(user=request.user)
 
-        total_expense_count=qs.count()
 
         total_expense=qs.values("amount").aggregate(sum_expense=Sum("amount"))
 
         category_summary=qs.values("category").annotate(cat_count=Count("category"))
         context={
-            "total_expense_count":total_expense_count,
             "category_summary":category_summary,
-            "total_expense":total_expense,
+            
         }
         return render(request,"dash_board.html",context)
 

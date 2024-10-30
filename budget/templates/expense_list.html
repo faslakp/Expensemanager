@@ -6,6 +6,20 @@
 
         
     <h1 class="text-center">welcome user {{request.user}}</h1>
+
+    <div class="container m-3">
+        <div class="w-50 mx-auto">
+            <form action="">
+                <select name="category" id="" class="form-select" onchange="this.form.submit()">
+                    <option value="all" {%if selected == "all"%} selected {%endif%}>all</option>
+                    <option value="food" {%if selected == "food"%} selected {%endif%}>food</option>
+                    <option value="travel" {%if selected == "travel"%} selected {%endif%}>travel</option>
+                    <option value="health" {%if selected == "health"%} selected {%endif%}>health</option>
+                    <option value="other" {%if selected == "other"%} selected {%endif%}>other</option>
+                </select>
+            </form>
+        </div>
+    </div>
     
     <div class="d-flex justify-content-end p-4">
         <a href="{%url 'expense-add'%}" class="btn btn-outline-success" type="submit">add</a>
@@ -18,7 +32,7 @@
                 <div class="card text-bg-dark mb-3" style="max-width: 18rem;">
                     <div class="card-header d-flex justify-content-between">
                         <div>{{e.user}}</div>
-                        <div> {{e.amount}}</div>
+                        <div> Rs.{{e.amount}}</div>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">{{e.title}}</h5>
